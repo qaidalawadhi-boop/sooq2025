@@ -5,6 +5,17 @@ from database import sellers_collection, products_collection, get_paginated_resu
 
 router = APIRouter(prefix="/sellers", tags=["sellers"])
 
+def convert_objectid(data):
+    """Convert MongoDB ObjectId to string recursively"""
+    if isinstance(data, dict):
+        if "_id" in data:
+            data.pop("_id", None)  # Remove MongoDB _id field
+        return {key: convert_objectid(value) for key, value in data.items()}
+    elif isinstance(data, list):
+        return [convert_objectid(item) for item in data]
+    else:
+        return data
+
 @router.get("/", response_model=List[SellerModel])
 async def get_sellers():
     """Get all sellers"""
