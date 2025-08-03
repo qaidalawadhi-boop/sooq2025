@@ -69,7 +69,7 @@ logger = logging.getLogger(__name__)
 @app.on_event("startup")
 async def startup_db_client():
     """Initialize database with sample data on startup"""
-    logger.info("Starting up Bazari API...")
+    logger.info("Starting up Souq Express API...")
     try:
         await init_sample_data()
         await init_default_admin()
@@ -80,5 +80,5 @@ async def startup_db_client():
 @app.on_event("shutdown")
 async def shutdown_db_client():
     """Close database connection on shutdown"""
-    logger.info("Shutting down Bazari API...")
+    logger.info("Shutting down Souq Express API...")
     client.close()
