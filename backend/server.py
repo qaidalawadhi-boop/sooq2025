@@ -38,7 +38,7 @@ async def root():
 
 @api_router.get("/health")
 async def health_check():
-    return {"status": "healthy", "service": "bazari-api"}
+    return {"status": "healthy", "service": "souq-express-api"}
 
 # Include all routers
 api_router.include_router(products_router)
