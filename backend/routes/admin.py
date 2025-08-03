@@ -129,6 +129,37 @@ async def get_admin_profile(current_admin = Depends(verify_admin_token)):
     current_admin.pop("password_hash", None)
     return current_admin
 
+@router.put("/change-password")
+async def change_admin_password(
+    password_data: AdminChangePassword,
+    current_admin = Depends(verify_admin_token)
+):
+    """Change admin password"""
+    
+    # Verify current password
+    admin = await admin_users_collection.find_one({"username": current_admin["username"]})
+    if not admin or not verify_password(password_data.current_password, admin["password_hash"]):
+        raise HTTPException(status_code=400, detail="كلمة المرور الحالية غير صحيحة")
+    
+    # Check if new passwords match
+    if password_data.new_password != password_data.confirm_password:
+        raise HTTPException(status_code=400, detail="كلمة المرور الجديدة وتأكيدها غير متطابقان")
+    
+    # Validate new password strength (at least 6 characters)
+    if len(password_data.new_password) < 6:
+        raise HTTPException(status_code=400, detail="كلمة المرور الجديدة يجب أن تكون 6 أحرف على الأقل")
+    
+    # Hash new password
+    new_password_hash = hash_password(password_data.new_password)
+    
+    # Update password in database
+    await admin_users_collection.update_one(
+        {"id": current_admin["id"]},
+        {"$set": {"password_hash": new_password_hash}}
+    )
+    
+    return {"message": "تم تحديث كلمة المرور بنجاح"}
+
 # Dashboard & Analytics
 @router.get("/dashboard/stats", response_model=DashboardStats)
 async def get_dashboard_stats(current_admin = Depends(verify_admin_token)):
