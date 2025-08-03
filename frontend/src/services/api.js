@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// Use environment variable for backend URL
-const API_BASE_URL = process.env.REACT_APP_BACKEND_URL + '/api';
+// Use environment variable for backend URL with HTTPS enforced
+const API_BASE_URL = process.env.REACT_APP_BACKEND_URL?.replace('http:', 'https:') + '/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
