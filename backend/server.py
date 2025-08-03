@@ -11,9 +11,11 @@ from routes.products import router as products_router
 from routes.categories import router as categories_router
 from routes.sellers import router as sellers_router
 from routes.reviews import router as reviews_router
+from routes.admin import router as admin_router
 
 # Import database initialization
 from database import init_sample_data
+from routes.admin import init_default_admin
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
