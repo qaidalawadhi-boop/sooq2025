@@ -45,6 +45,7 @@ api_router.include_router(products_router)
 api_router.include_router(categories_router)
 api_router.include_router(sellers_router)
 api_router.include_router(reviews_router)
+api_router.include_router(admin_router)
 
 # Include the main API router in the app
 app.include_router(api_router)
