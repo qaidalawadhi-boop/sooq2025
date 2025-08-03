@@ -44,11 +44,7 @@ const AdminLogin = () => {
       // Save authentication data
       adminAuthAPI.saveAuth(response.access_token, response.admin_info);
       
-      toast({
-        title: "تسجيل دخول ناجح",
-        description: `مرحباً ${response.admin_info.full_name}`,
-        variant: "default",
-      });
+      console.log("تسجيل دخول ناجح", `مرحباً ${response.admin_info.full_name}`);
       
       // Redirect to dashboard
       navigate('/admin/dashboard');
