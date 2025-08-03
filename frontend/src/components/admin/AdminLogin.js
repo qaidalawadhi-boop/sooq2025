@@ -52,11 +52,7 @@ const AdminLogin = () => {
       const errorInfo = adminApiUtils.handleError(err);
       setError(errorInfo.message);
       
-      toast({
-        title: "خطأ في تسجيل الدخول",
-        description: errorInfo.message,
-        variant: "destructive",
-      });
+      console.error("خطأ في تسجيل الدخول", errorInfo.message);
     } finally {
       setLoading(false);
     }
