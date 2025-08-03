@@ -8,8 +8,22 @@ import { categoriesAPI } from '../services/api';
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [categories, setCategories] = useState([]);
   const [cartItems] = useState(3); // Mock cart count
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const categoriesData = await categoriesAPI.getAll();
+        setCategories(categoriesData || []);
+      } catch (error) {
+        console.error('Error loading categories:', error);
+      }
+    };
+
+    loadCategories();
+  }, []);
 
   const handleSearch = (e) => {
     e.preventDefault();
