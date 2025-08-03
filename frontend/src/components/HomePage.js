@@ -182,7 +182,7 @@ const HomePage = () => {
             <div className="text-white">
               <div className="flex items-center space-x-2 space-x-reverse mb-4">
                 <Zap className="h-6 w-6 text-yellow-400" />
-                <span className="text-yellow-400 font-semibold">منصة بازاري</span>
+                <span className="text-yellow-400 font-semibold">منصة سوق إكسبرس</span>
               </div>
               <h1 className="text-4xl lg:text-6xl font-bold mb-6 leading-tight">
                 أفضل وجهة للتسوق
