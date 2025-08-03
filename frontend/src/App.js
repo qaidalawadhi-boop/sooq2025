@@ -6,6 +6,7 @@ import Footer from "./components/Footer";
 import HomePage from "./components/HomePage";
 import AdminLogin from "./components/admin/AdminLogin";
 import AdminDashboard from "./components/admin/AdminDashboard";
+import ChangePassword from "./components/admin/ChangePassword";
 import { Toaster } from "./components/ui/toaster";
 
 // Admin routes wrapper
@@ -13,6 +14,7 @@ const AdminRoutes = () => (
   <Routes>
     <Route path="/login" element={<AdminLogin />} />
     <Route path="/dashboard" element={<AdminDashboard />} />
+    <Route path="/change-password" element={<ChangePassword />} />
     <Route path="/" element={<AdminDashboard />} />
   </Routes>
 );
