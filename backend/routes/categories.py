@@ -5,11 +5,23 @@ from database import categories_collection, products_collection, get_paginated_r
 
 router = APIRouter(prefix="/categories", tags=["categories"])
 
+def convert_objectid(data):
+    """Convert MongoDB ObjectId to string recursively"""
+    if isinstance(data, dict):
+        if "_id" in data:
+            data.pop("_id", None)  # Remove MongoDB _id field
+        return {key: convert_objectid(value) for key, value in data.items()}
+    elif isinstance(data, list):
+        return [convert_objectid(item) for item in data]
+    else:
+        return data
+
 @router.get("/", response_model=List[CategoryModel])
 async def get_categories():
     """Get all categories"""
     categories = await categories_collection.find({"isActive": True}).to_list(100)
-    return [CategoryModel(**category) for category in categories]
+    cleaned_categories = convert_objectid(categories)
+    return [CategoryModel(**category) for category in cleaned_categories]
 
 @router.get("/{category_id}", response_model=CategoryModel)
 async def get_category(category_id: str):
@@ -17,7 +29,8 @@ async def get_category(category_id: str):
     category = await categories_collection.find_one({"id": category_id, "isActive": True})
     if not category:
         raise HTTPException(status_code=404, detail="Category not found")
-    return CategoryModel(**category)
+    cleaned_category = convert_objectid(category)
+    return CategoryModel(**cleaned_category)
 
 @router.get("/{category_id}/products")
 async def get_category_products(
@@ -33,7 +46,10 @@ async def get_category_products(
         raise HTTPException(status_code=404, detail="Category not found")
     
     filter_dict = {"categoryId": category_id}
-    return await get_paginated_results(products_collection, filter_dict, page, limit)
+    result = await get_paginated_results(products_collection, filter_dict, page, limit)
+    result["items"] = convert_objectid(result["items"])
+    
+    return result
 
 @router.post("/", response_model=CategoryModel)
 async def create_category(category: CategoryCreate):
