@@ -338,6 +338,292 @@ class BazariAPITester:
             else:
                 self.log_test("Seller data structure", False, f"Missing fields: {missing_fields}")
     
+    async def test_admin_authentication(self):
+        """Test Admin Authentication APIs"""
+        print("=== Testing Admin Authentication ===")
+        
+        # Test POST /api/admin/login
+        login_data = {
+            "username": "admin",
+            "password": "admin123"
+        }
+        
+        success, data, error = await self.make_request("POST", "/admin/login", json=login_data)
+        if success and isinstance(data, dict) and "access_token" in data:
+            self.admin_token = data["access_token"]
+            admin_info = data.get("admin_info", {})
+            self.log_test("POST /api/admin/login", True, 
+                        f"Login successful, admin: {admin_info.get('username', '')}")
+        else:
+            self.log_test("POST /api/admin/login", False, error, data)
+            return None
+        
+        # Test GET /api/admin/profile (requires authentication)
+        headers = {"Authorization": f"Bearer {self.admin_token}"}
+        success, data, error = await self.make_request("GET", "/admin/profile", headers=headers)
+        if success and isinstance(data, dict) and data.get("username") == "admin":
+            self.log_test("GET /api/admin/profile", True, 
+                        f"Profile retrieved: {data.get('full_name', '')}")
+        else:
+            self.log_test("GET /api/admin/profile", False, error, data)
+        
+        return self.admin_token
+    
+    async def test_admin_dashboard(self):
+        """Test Admin Dashboard APIs"""
+        print("=== Testing Admin Dashboard ===")
+        
+        if not hasattr(self, 'admin_token') or not self.admin_token:
+            self.log_test("Admin Dashboard Tests", False, "No admin token available")
+            return
+        
+        headers = {"Authorization": f"Bearer {self.admin_token}"}
+        
+        # Test GET /api/admin/dashboard/stats
+        success, data, error = await self.make_request("GET", "/admin/dashboard/stats", headers=headers)
+        if success and isinstance(data, dict):
+            required_fields = ["total_orders", "total_revenue", "total_customers", "total_products", 
+                             "total_sellers", "orders_today", "revenue_today", "pending_orders", "low_stock_products"]
+            missing_fields = [field for field in required_fields if field not in data]
+            
+            if not missing_fields:
+                self.log_test("GET /api/admin/dashboard/stats", True, 
+                            f"Stats: {data.get('total_orders', 0)} orders, {data.get('total_products', 0)} products")
+            else:
+                self.log_test("GET /api/admin/dashboard/stats", False, f"Missing fields: {missing_fields}")
+        else:
+            self.log_test("GET /api/admin/dashboard/stats", False, error, data)
+        
+        # Test GET /api/admin/analytics
+        success, data, error = await self.make_request("GET", "/admin/analytics", headers=headers)
+        if success and isinstance(data, dict):
+            required_fields = ["dashboard_stats", "sales_chart", "top_products", "recent_orders"]
+            missing_fields = [field for field in required_fields if field not in data]
+            
+            if not missing_fields:
+                sales_chart_count = len(data.get("sales_chart", []))
+                top_products_count = len(data.get("top_products", []))
+                recent_orders_count = len(data.get("recent_orders", []))
+                self.log_test("GET /api/admin/analytics", True, 
+                            f"Analytics: {sales_chart_count} sales data points, {top_products_count} top products, {recent_orders_count} recent orders")
+            else:
+                self.log_test("GET /api/admin/analytics", False, f"Missing fields: {missing_fields}")
+        else:
+            self.log_test("GET /api/admin/analytics", False, error, data)
+    
+    async def test_admin_orders_management(self):
+        """Test Admin Orders Management APIs"""
+        print("=== Testing Admin Orders Management ===")
+        
+        if not hasattr(self, 'admin_token') or not self.admin_token:
+            self.log_test("Admin Orders Tests", False, "No admin token available")
+            return
+        
+        headers = {"Authorization": f"Bearer {self.admin_token}"}
+        
+        # Test GET /api/admin/orders
+        success, data, error = await self.make_request("GET", "/admin/orders", headers=headers)
+        orders_data = None
+        if success and isinstance(data, dict) and "items" in data:
+            orders_data = data
+            items_count = len(data.get("items", []))
+            total = data.get("total", 0)
+            self.log_test("GET /api/admin/orders", True, 
+                        f"Found {items_count} orders (total: {total})")
+        else:
+            self.log_test("GET /api/admin/orders", False, error, data)
+        
+        # Test pagination
+        success, data, error = await self.make_request("GET", "/admin/orders?page=1&limit=5", headers=headers)
+        if success and isinstance(data, dict) and len(data.get("items", [])) <= 5:
+            self.log_test("GET /api/admin/orders (pagination)", True, 
+                        f"Pagination working, got {len(data.get('items', []))} items")
+        else:
+            self.log_test("GET /api/admin/orders (pagination)", False, error, data)
+        
+        # Test specific order if orders exist
+        if orders_data and orders_data.get("items"):
+            order_id = orders_data["items"][0].get("id")
+            if order_id:
+                # Test GET /api/admin/orders/{id}
+                success, data, error = await self.make_request("GET", f"/admin/orders/{order_id}", headers=headers)
+                if success and isinstance(data, dict) and data.get("id") == order_id:
+                    self.log_test(f"GET /api/admin/orders/{order_id}", True, 
+                                f"Order details: {data.get('order_number', '')}")
+                else:
+                    self.log_test(f"GET /api/admin/orders/{order_id}", False, error, data)
+                
+                # Test PUT /api/admin/orders/{id} (update order)
+                update_data = {"status": "confirmed", "notes": "تم تأكيد الطلب من قبل الإدمن"}
+                success, data, error = await self.make_request("PUT", f"/admin/orders/{order_id}", 
+                                                             json=update_data, headers=headers)
+                if success and isinstance(data, dict) and "message" in data:
+                    self.log_test(f"PUT /api/admin/orders/{order_id}", True, "Order updated successfully")
+                else:
+                    self.log_test(f"PUT /api/admin/orders/{order_id}", False, error, data)
+        else:
+            self.log_test("Admin Orders Detail Tests", False, "No orders found to test specific operations")
+    
+    async def test_admin_products_management(self):
+        """Test Admin Products Management APIs"""
+        print("=== Testing Admin Products Management ===")
+        
+        if not hasattr(self, 'admin_token') or not self.admin_token:
+            self.log_test("Admin Products Tests", False, "No admin token available")
+            return
+        
+        headers = {"Authorization": f"Bearer {self.admin_token}"}
+        
+        # Test GET /api/admin/products
+        success, data, error = await self.make_request("GET", "/admin/products", headers=headers)
+        if success and isinstance(data, dict) and "items" in data:
+            items_count = len(data.get("items", []))
+            total = data.get("total", 0)
+            self.log_test("GET /api/admin/products", True, 
+                        f"Found {items_count} products (total: {total})")
+        else:
+            self.log_test("GET /api/admin/products", False, error, data)
+    
+    async def test_admin_categories_management(self):
+        """Test Admin Categories Management APIs"""
+        print("=== Testing Admin Categories Management ===")
+        
+        if not hasattr(self, 'admin_token') or not self.admin_token:
+            self.log_test("Admin Categories Tests", False, "No admin token available")
+            return
+        
+        headers = {"Authorization": f"Bearer {self.admin_token}"}
+        
+        # Test GET /api/admin/categories
+        success, data, error = await self.make_request("GET", "/admin/categories", headers=headers)
+        if success and isinstance(data, list) and len(data) > 0:
+            self.log_test("GET /api/admin/categories", True, f"Found {len(data)} categories")
+        else:
+            self.log_test("GET /api/admin/categories", False, error, data)
+    
+    async def test_admin_sellers_management(self):
+        """Test Admin Sellers Management APIs"""
+        print("=== Testing Admin Sellers Management ===")
+        
+        if not hasattr(self, 'admin_token') or not self.admin_token:
+            self.log_test("Admin Sellers Tests", False, "No admin token available")
+            return
+        
+        headers = {"Authorization": f"Bearer {self.admin_token}"}
+        
+        # Test GET /api/admin/sellers
+        success, data, error = await self.make_request("GET", "/admin/sellers", headers=headers)
+        if success and isinstance(data, list) and len(data) > 0:
+            self.log_test("GET /api/admin/sellers", True, f"Found {len(data)} sellers")
+        else:
+            self.log_test("GET /api/admin/sellers", False, error, data)
+    
+    async def test_admin_settings(self):
+        """Test Admin Settings APIs"""
+        print("=== Testing Admin Settings ===")
+        
+        if not hasattr(self, 'admin_token') or not self.admin_token:
+            self.log_test("Admin Settings Tests", False, "No admin token available")
+            return
+        
+        headers = {"Authorization": f"Bearer {self.admin_token}"}
+        
+        # Test GET /api/admin/settings
+        success, data, error = await self.make_request("GET", "/admin/settings", headers=headers)
+        settings_data = None
+        if success and isinstance(data, dict):
+            settings_data = data
+            required_fields = ["site_name", "currency", "language", "tax_rate"]
+            missing_fields = [field for field in required_fields if field not in data]
+            
+            if not missing_fields:
+                self.log_test("GET /api/admin/settings", True, 
+                            f"Settings: {data.get('site_name', '')}, currency: {data.get('currency', '')}")
+            else:
+                self.log_test("GET /api/admin/settings", False, f"Missing fields: {missing_fields}")
+        else:
+            self.log_test("GET /api/admin/settings", False, error, data)
+        
+        # Test PUT /api/admin/settings
+        update_data = {
+            "site_name": "منصة بازاري المحدثة",
+            "contact_email": "admin@bazari-updated.com",
+            "tax_rate": 0.16
+        }
+        success, data, error = await self.make_request("PUT", "/admin/settings", 
+                                                     json=update_data, headers=headers)
+        if success and isinstance(data, dict) and "message" in data:
+            self.log_test("PUT /api/admin/settings", True, "Settings updated successfully")
+        else:
+            self.log_test("PUT /api/admin/settings", False, error, data)
+    
+    async def test_admin_notifications(self):
+        """Test Admin Notifications APIs"""
+        print("=== Testing Admin Notifications ===")
+        
+        if not hasattr(self, 'admin_token') or not self.admin_token:
+            self.log_test("Admin Notifications Tests", False, "No admin token available")
+            return
+        
+        headers = {"Authorization": f"Bearer {self.admin_token}"}
+        
+        # Test GET /api/admin/notifications
+        success, data, error = await self.make_request("GET", "/admin/notifications", headers=headers)
+        notifications_data = None
+        if success and isinstance(data, dict) and "items" in data:
+            notifications_data = data
+            items_count = len(data.get("items", []))
+            total = data.get("total", 0)
+            self.log_test("GET /api/admin/notifications", True, 
+                        f"Found {items_count} notifications (total: {total})")
+        else:
+            self.log_test("GET /api/admin/notifications", False, error, data)
+        
+        # Test specific notification if notifications exist
+        if notifications_data and notifications_data.get("items"):
+            notification_id = notifications_data["items"][0].get("id")
+            if notification_id:
+                # Test PUT /api/admin/notifications/{id}/read
+                success, data, error = await self.make_request("PUT", f"/admin/notifications/{notification_id}/read", 
+                                                             headers=headers)
+                if success and isinstance(data, dict) and "message" in data:
+                    self.log_test(f"PUT /api/admin/notifications/{notification_id}/read", True, 
+                                "Notification marked as read")
+                else:
+                    self.log_test(f"PUT /api/admin/notifications/{notification_id}/read", False, error, data)
+        else:
+            self.log_test("Admin Notifications Detail Tests", False, "No notifications found to test specific operations")
+    
+    async def test_admin_authentication_security(self):
+        """Test Admin Authentication Security"""
+        print("=== Testing Admin Authentication Security ===")
+        
+        # Test accessing admin endpoint without token
+        success, data, error = await self.make_request("GET", "/admin/profile")
+        if not success and ("401" in str(error) or "403" in str(error)):
+            self.log_test("Admin endpoint without token (security test)", True, "Correctly rejected unauthorized access")
+        else:
+            self.log_test("Admin endpoint without token (security test)", False, "Should reject unauthorized access")
+        
+        # Test with invalid token
+        headers = {"Authorization": "Bearer invalid-token-12345"}
+        success, data, error = await self.make_request("GET", "/admin/profile", headers=headers)
+        if not success and ("401" in str(error) or "403" in str(error)):
+            self.log_test("Admin endpoint with invalid token (security test)", True, "Correctly rejected invalid token")
+        else:
+            self.log_test("Admin endpoint with invalid token (security test)", False, "Should reject invalid token")
+        
+        # Test login with wrong credentials
+        wrong_login_data = {
+            "username": "admin",
+            "password": "wrongpassword"
+        }
+        success, data, error = await self.make_request("POST", "/admin/login", json=wrong_login_data)
+        if not success and "401" in str(error):
+            self.log_test("Admin login with wrong credentials (security test)", True, "Correctly rejected wrong credentials")
+        else:
+            self.log_test("Admin login with wrong credentials (security test)", False, "Should reject wrong credentials")
+
     async def run_all_tests(self):
         """Run all API tests"""
         print(f"Starting Bazari Backend API Tests")
@@ -346,12 +632,24 @@ class BazariAPITester:
         print("=" * 60)
         
         try:
+            # Test basic APIs first
             await self.test_basic_api()
             await self.test_categories_api()
             await self.test_products_api()
             await self.test_sellers_api()
             await self.test_reviews_api()
             await self.test_data_structure_validation()
+            
+            # Test Admin APIs (NEW)
+            await self.test_admin_authentication()
+            await self.test_admin_dashboard()
+            await self.test_admin_orders_management()
+            await self.test_admin_products_management()
+            await self.test_admin_categories_management()
+            await self.test_admin_sellers_management()
+            await self.test_admin_settings()
+            await self.test_admin_notifications()
+            await self.test_admin_authentication_security()
             
         except Exception as e:
             print(f"Error during testing: {e}")
