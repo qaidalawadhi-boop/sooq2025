@@ -45,6 +45,7 @@ adminApi.interceptors.response.use(
 export const adminAuthAPI = {
   login: (credentials) => adminApi.post('/login', credentials),
   getProfile: () => adminApi.get('/profile'),
+  changePassword: (passwordData) => adminApi.put('/change-password', passwordData),
   
   // Save auth data
   saveAuth: (token, adminInfo) => {
