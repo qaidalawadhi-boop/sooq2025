@@ -5,7 +5,6 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { adminAuthAPI, adminApiUtils } from '../../services/adminApi';
-import { useToast } from '../ui/use-toast';
 
 const AdminLogin = () => {
   const [formData, setFormData] = useState({
