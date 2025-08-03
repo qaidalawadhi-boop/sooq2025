@@ -20,7 +20,8 @@ def convert_objectid(data):
 async def get_sellers():
     """Get all sellers"""
     sellers = await sellers_collection.find({}).sort("rating", -1).to_list(100)
-    return [SellerModel(**seller) for seller in sellers]
+    cleaned_sellers = convert_objectid(sellers)
+    return [SellerModel(**seller) for seller in cleaned_sellers]
 
 @router.get("/{seller_id}", response_model=SellerModel)
 async def get_seller(seller_id: str):
@@ -28,7 +29,8 @@ async def get_seller(seller_id: str):
     seller = await sellers_collection.find_one({"id": seller_id})
     if not seller:
         raise HTTPException(status_code=404, detail="Seller not found")
-    return SellerModel(**seller)
+    cleaned_seller = convert_objectid(seller)
+    return SellerModel(**cleaned_seller)
 
 @router.get("/{seller_id}/products")
 async def get_seller_products(
@@ -44,7 +46,12 @@ async def get_seller_products(
         raise HTTPException(status_code=404, detail="Seller not found")
     
     filter_dict = {"sellerId": seller_id}
-    return await get_paginated_results(products_collection, filter_dict, page, limit)
+    result = await get_paginated_results(products_collection, filter_dict, page, limit)
+    
+    # Clean ObjectIds from result
+    result["items"] = convert_objectid(result["items"])
+    
+    return result
 
 @router.post("/", response_model=SellerModel)
 async def create_seller(seller: SellerCreate):
