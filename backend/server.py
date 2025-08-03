@@ -34,7 +34,7 @@ api_router = APIRouter(prefix="/api")
 # Basic health check
 @api_router.get("/")
 async def root():
-    return {"message": "مرحباً بك في منصة بازاري", "status": "working", "version": "1.0.0"}
+    return {"message": "مرحباً بك في منصة سوق إكسبرس", "status": "working", "version": "1.0.0"}
 
 @api_router.get("/health")
 async def health_check():
