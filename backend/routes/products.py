@@ -6,6 +6,17 @@ import re
 
 router = APIRouter(prefix="/products", tags=["products"])
 
+def convert_objectid(data):
+    """Convert MongoDB ObjectId to string recursively"""
+    if isinstance(data, dict):
+        if "_id" in data:
+            data.pop("_id", None)  # Remove MongoDB _id field
+        return {key: convert_objectid(value) for key, value in data.items()}
+    elif isinstance(data, list):
+        return [convert_objectid(item) for item in data]
+    else:
+        return data
+
 @router.get("/", response_model=dict)
 async def get_products(
     page: int = Query(1, ge=1),
@@ -47,25 +58,33 @@ async def get_products(
             {"description": {"$regex": search, "$options": "i"}}
         ]
     
-    return await get_paginated_results(products_collection, filter_dict, page, limit)
+    result = await get_paginated_results(products_collection, filter_dict, page, limit)
+    
+    # Clean ObjectIds from result
+    result["items"] = convert_objectid(result["items"])
+    
+    return result
 
 @router.get("/featured", response_model=List[ProductModel])
 async def get_featured_products():
     """Get featured products"""
     products = await products_collection.find({"isFeatured": True}).to_list(20)
-    return [ProductModel(**product) for product in products]
+    cleaned_products = convert_objectid(products)
+    return [ProductModel(**product) for product in cleaned_products]
 
 @router.get("/new", response_model=List[ProductModel])
 async def get_new_products():
     """Get new products"""
     products = await products_collection.find({"isNew": True}).to_list(20)
-    return [ProductModel(**product) for product in products]
+    cleaned_products = convert_objectid(products)
+    return [ProductModel(**product) for product in cleaned_products]
 
 @router.get("/trending", response_model=List[ProductModel])
 async def get_trending_products():
     """Get trending products (highest rated)"""
     products = await products_collection.find({}).sort("rating", -1).limit(8).to_list(8)
-    return [ProductModel(**product) for product in products]
+    cleaned_products = convert_objectid(products)
+    return [ProductModel(**product) for product in cleaned_products]
 
 @router.get("/search")
 async def search_products(
@@ -96,7 +115,10 @@ async def search_products(
         else:
             filter_dict["price"] = {"$lte": maxPrice}
     
-    return await get_paginated_results(products_collection, filter_dict, page, limit)
+    result = await get_paginated_results(products_collection, filter_dict, page, limit)
+    result["items"] = convert_objectid(result["items"])
+    
+    return result
 
 @router.get("/{product_id}", response_model=ProductModel)
 async def get_product(product_id: str):
@@ -104,7 +126,9 @@ async def get_product(product_id: str):
     product = await products_collection.find_one({"id": product_id})
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
-    return ProductModel(**product)
+    
+    cleaned_product = convert_objectid(product)
+    return ProductModel(**cleaned_product)
 
 @router.post("/", response_model=ProductModel)
 async def create_product(product: ProductCreate):
