@@ -72,11 +72,11 @@ const Footer = () => {
             <div className="col-span-1 lg:col-span-1">
               <div className="flex items-center space-x-2 space-x-reverse mb-6">
                 <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold text-xl px-3 py-2 rounded-lg">
-                  بازاري
+                  سوق إكسبرس
                 </div>
               </div>
               <p className="text-gray-300 mb-6 leading-relaxed">
-                منصة بازاري هي وجهتك الأولى للتسوق الإلكتروني في العالم العربي. نقدم مجموعة واسعة من المنتجات عالية الجودة بأفضل الأسعار.
+                منصة سوق إكسبرس هي وجهتك الأولى للتسوق الإلكتروني في العالم العربي. نقدم مجموعة واسعة من المنتجات عالية الجودة بأفضل الأسعار.
               </p>
               <div className="flex space-x-4 space-x-reverse">
                 <a href="#" className="bg-blue-600 hover:bg-blue-700 p-2 rounded-lg transition-colors">
