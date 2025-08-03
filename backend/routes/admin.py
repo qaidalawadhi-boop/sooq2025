@@ -6,7 +6,7 @@ import jwt
 from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
 import bcrypt
 from models_admin import (
-    AdminUser, AdminUserCreate, AdminLogin, AdminToken,
+    AdminUser, AdminUserCreate, AdminLogin, AdminChangePassword, AdminToken,
     Order, OrderCreate, OrderUpdate, 
     DashboardStats, AnalyticsData, SalesData, TopProduct,
     SystemSettings, SystemSettingsUpdate,
