@@ -159,3 +159,6 @@
 - Backend: FastAPI + MongoDB + Motor (async)
 - Frontend: React + Axios
 - Database: MongoDB مع collections منفصلة لكل model
+
+## ملاحظة
+تم تحديث اسم المنصة من "بازاري" إلى "سوق إكسبرس" في جميع أجزاء النظام.
