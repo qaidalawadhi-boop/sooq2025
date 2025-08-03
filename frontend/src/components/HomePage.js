@@ -117,7 +117,7 @@ const HomePage = () => {
             <h3 className="font-semibold text-sm mb-1 line-clamp-2 text-gray-900 group-hover:text-blue-600 transition-colors">
               {product.title}
             </h3>
-            <p className="text-xs text-gray-500">{product.category}</p>
+            <p className="text-xs text-gray-500">{product.category || 'منتج'}</p>
           </div>
           
           <div className="flex items-center justify-between mb-3">
@@ -147,6 +147,36 @@ const HomePage = () => {
       </CardContent>
     </Card>
   );
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-12 w-12 animate-spin text-blue-600 mx-auto mb-4" />
+          <p className="text-gray-600">جارٍ تحميل المنصة...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto p-6">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+            <p className="text-red-600 mb-2">حدث خطأ في تحميل البيانات</p>
+            <p className="text-sm text-red-500">{error}</p>
+          </div>
+          <Button 
+            onClick={() => window.location.reload()} 
+            className="bg-blue-600 hover:bg-blue-700 text-white"
+          >
+            إعادة المحاولة
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -185,24 +215,20 @@ const HomePage = () => {
               <div className="relative">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-4">
-                    <div className="bg-white rounded-xl p-4 shadow-xl transform rotate-3 hover:rotate-0 transition-transform duration-500">
-                      <img src={mockProducts[0]?.image} alt="منتج" className="w-full h-24 object-cover rounded-lg mb-2" />
-                      <p className="text-sm font-semibold text-gray-800">{mockProducts[0]?.title}</p>
-                    </div>
-                    <div className="bg-white rounded-xl p-4 shadow-xl transform -rotate-2 hover:rotate-0 transition-transform duration-500">
-                      <img src={mockProducts[1]?.image} alt="منتج" className="w-full h-24 object-cover rounded-lg mb-2" />
-                      <p className="text-sm font-semibold text-gray-800">{mockProducts[1]?.title}</p>
-                    </div>
+                    {featuredProducts.slice(0, 2).map((product, index) => (
+                      <div key={product.id} className={`bg-white rounded-xl p-4 shadow-xl transform ${index === 0 ? 'rotate-3' : '-rotate-2'} hover:rotate-0 transition-transform duration-500`}>
+                        <img src={product.image} alt="منتج" className="w-full h-24 object-cover rounded-lg mb-2" />
+                        <p className="text-sm font-semibold text-gray-800">{product.title}</p>
+                      </div>
+                    ))}
                   </div>
                   <div className="space-y-4 mt-8">
-                    <div className="bg-white rounded-xl p-4 shadow-xl transform rotate-2 hover:rotate-0 transition-transform duration-500">
-                      <img src={mockProducts[2]?.image} alt="منتج" className="w-full h-24 object-cover rounded-lg mb-2" />
-                      <p className="text-sm font-semibold text-gray-800">{mockProducts[2]?.title}</p>
-                    </div>
-                    <div className="bg-white rounded-xl p-4 shadow-xl transform -rotate-1 hover:rotate-0 transition-transform duration-500">
-                      <img src={mockProducts[3]?.image} alt="منتج" className="w-full h-24 object-cover rounded-lg mb-2" />
-                      <p className="text-sm font-semibold text-gray-800">{mockProducts[3]?.title}</p>
-                    </div>
+                    {featuredProducts.slice(2, 4).map((product, index) => (
+                      <div key={product.id} className={`bg-white rounded-xl p-4 shadow-xl transform ${index === 0 ? 'rotate-2' : '-rotate-1'} hover:rotate-0 transition-transform duration-500`}>
+                        <img src={product.image} alt="منتج" className="w-full h-24 object-cover rounded-lg mb-2" />
+                        <p className="text-sm font-semibold text-gray-800">{product.title}</p>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -227,7 +253,7 @@ const HomePage = () => {
           </div>
           
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            {mockCategories.map((category) => (
+            {categories.map((category) => (
               <Link
                 key={category.id}
                 to={`/categories/${category.id}`}
