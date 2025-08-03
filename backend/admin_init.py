@@ -33,7 +33,7 @@ async def init_admin_data():
         default_admin = {
             "id": "admin-001",
             "username": "admin",
-            "email": "admin@bazari.com",
+            "email": "admin@souq-express.com",
             "password_hash": password_hash,
             "full_name": "مدير المنصة الرئيسي",
             "role": "super_admin",
