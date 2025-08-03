@@ -46,7 +46,7 @@ async def init_admin_data():
         print("✅ Default admin user created:")
         print("   Username: admin")
         print("   Password: admin123")
-        print("   Email: admin@bazari.com")
+        print("   Email: admin@souq-express.com")
     else:
         print("✅ Admin user already exists")
     
