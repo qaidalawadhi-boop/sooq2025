@@ -182,7 +182,7 @@ const Header = () => {
             >
               جميع الأقسام
             </Link>
-            {mockCategories.map((category) => (
+            {categories.map((category) => (
               <Link
                 key={category.id}
                 to={`/categories/${category.id}`}
