@@ -16,7 +16,6 @@ const AdminLogin = () => {
   const [error, setError] = useState('');
   
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   useEffect(() => {
     // Redirect if already logged in
