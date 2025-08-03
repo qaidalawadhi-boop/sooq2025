@@ -292,11 +292,17 @@ const HomePage = () => {
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredProducts.map((product) => (
-              <Link key={product.id} to={`/products/${product.id}`}>
-                <ProductCard product={product} />
-              </Link>
-            ))}
+            {featuredProducts.length > 0 ? (
+              featuredProducts.map((product) => (
+                <Link key={product.id} to={`/products/${product.id}`}>
+                  <ProductCard product={product} />
+                </Link>
+              ))
+            ) : (
+              <div className="col-span-4 text-center py-8">
+                <p className="text-gray-500">لا توجد منتجات مميزة متاحة حالياً</p>
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -317,11 +323,17 @@ const HomePage = () => {
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {newProducts.map((product) => (
-              <Link key={product.id} to={`/products/${product.id}`}>
-                <ProductCard product={product} />
-              </Link>
-            ))}
+            {newProducts.length > 0 ? (
+              newProducts.map((product) => (
+                <Link key={product.id} to={`/products/${product.id}`}>
+                  <ProductCard product={product} />
+                </Link>
+              ))
+            ) : (
+              <div className="col-span-4 text-center py-8">
+                <p className="text-gray-500">لا توجد منتجات جديدة متاحة حالياً</p>
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -342,11 +354,17 @@ const HomePage = () => {
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {trendingProducts.map((product) => (
-              <Link key={product.id} to={`/products/${product.id}`}>
-                <ProductCard product={product} />
-              </Link>
-            ))}
+            {trendingProducts.length > 0 ? (
+              trendingProducts.map((product) => (
+                <Link key={product.id} to={`/products/${product.id}`}>
+                  <ProductCard product={product} />
+                </Link>
+              ))
+            ) : (
+              <div className="col-span-4 text-center py-8">
+                <p className="text-gray-500">لا توجد منتجات رائجة متاحة حالياً</p>
+              </div>
+            )}
           </div>
         </div>
       </section>
