@@ -124,7 +124,7 @@ const AdminLayout = ({ children }) => {
               {sidebarOpen && (
                 <div>
                   <h1 className="text-xl font-bold text-gray-800">لوحة التحكم</h1>
-                  <p className="text-sm text-gray-500">منصة بازاري</p>
+                  <p className="text-sm text-gray-500">منصة سوق إكسبرس</p>
                 </div>
               )}
             </div>
