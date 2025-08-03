@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, ShoppingCart, User, Heart, Menu, X } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { mockCategories } from '../mock/data';
+import { categoriesAPI } from '../services/api';
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState('');
