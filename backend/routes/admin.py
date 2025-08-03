@@ -75,9 +75,9 @@ async def verify_admin_token(credentials: HTTPAuthorizationCredentials = Depends
             raise HTTPException(status_code=401, detail="Admin user not found")
         
         return convert_objectid(admin)
-    except jwt.ExpiredSignatureError:
+    except ExpiredSignatureError:
         raise HTTPException(status_code=401, detail="Token expired")
-    except jwt.JWTError:
+    except InvalidTokenError:
         raise HTTPException(status_code=401, detail="Invalid token")
 
 # Initialize default admin user
