@@ -12,6 +12,7 @@ from routes.categories import router as categories_router
 from routes.sellers import router as sellers_router
 from routes.reviews import router as reviews_router
 from routes.admin import router as admin_router
+from routes.accounting import router as accounting_router
 
 # Import database initialization
 from database import init_sample_data
