@@ -21,7 +21,7 @@ import os
 
 # Admin collections
 client = AsyncIOMotorClient(os.environ.get('MONGO_URL', 'mongodb://localhost:27017'))
-db = client[os.environ.get('DB_NAME', 'bazari_db')]
+db = client[os.environ.get('DB_NAME', 'test_database')]
 admin_users_collection = db.admin_users
 orders_collection = db.orders
 settings_collection = db.settings
