@@ -70,7 +70,7 @@ const AdminLogin = () => {
           <CardTitle className="text-2xl font-bold text-gray-800">
             لوحة التحكم الإدارية
           </CardTitle>
-          <p className="text-gray-600 mt-2">تسجيل الدخول إلى منصة بازاري</p>
+          <p className="text-gray-600 mt-2">تسجيل الدخول إلى منصة سوق إكسبرس</p>
         </CardHeader>
         
         <CardContent>
