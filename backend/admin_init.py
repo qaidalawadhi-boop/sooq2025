@@ -154,19 +154,19 @@ async def init_admin_data():
     if settings_count == 0:
         default_settings = {
             "id": "settings-001",
-            "site_name": "منصة بازاري",
-            "site_description": "أفضل منصة للتسوق الإلكتروني في العالم العربي",
-            "logo_url": "https://via.placeholder.com/200x80?text=بازاري",
-            "favicon_url": "https://via.placeholder.com/32x32?text=B",
+            "site_name": "منصة سوق إكسبرس",
+            "site_description": "أفضل منصة للتسوق الإلكتروني في العالم العربي - سريع وموثوق",
+            "logo_url": "https://via.placeholder.com/200x80?text=سوق+إكسبرس",
+            "favicon_url": "https://via.placeholder.com/32x32?text=س",
             "primary_color": "#3B82F6",
             "secondary_color": "#F59E0B",
-            "contact_email": "info@bazari.com",
+            "contact_email": "info@souq-express.com",
             "contact_phone": "+966112345678",
             "social_links": {
-                "facebook": "https://facebook.com/bazari",
-                "twitter": "https://twitter.com/bazari",
-                "instagram": "https://instagram.com/bazari",
-                "youtube": "https://youtube.com/bazari"
+                "facebook": "https://facebook.com/souq-express",
+                "twitter": "https://twitter.com/souq_express",
+                "instagram": "https://instagram.com/souq_express",
+                "youtube": "https://youtube.com/souq_express"
             },
             "payment_methods": ["credit_card", "bank_transfer", "cash_on_delivery", "apple_pay", "stc_pay"],
             "shipping_methods": [
