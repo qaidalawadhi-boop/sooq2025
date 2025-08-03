@@ -123,13 +123,13 @@ class AnalyticsData(BaseModel):
 class SystemSettings(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     site_name: str = "منصة بازاري"
-    site_description: str
-    logo_url: str
-    favicon_url: str
+    site_description: str = "منصة التجارة الإلكترونية الرائدة في المملكة العربية السعودية"
+    logo_url: str = "/images/logo.png"
+    favicon_url: str = "/images/favicon.ico"
     primary_color: str = "#3B82F6"
     secondary_color: str = "#F59E0B"
-    contact_email: str
-    contact_phone: str
+    contact_email: str = "info@bazari.com"
+    contact_phone: str = "+966501234567"
     social_links: Dict[str, str] = {}
     payment_methods: List[str] = ["credit_card", "bank_transfer", "cash_on_delivery"]
     shipping_methods: List[Dict[str, Any]] = []
