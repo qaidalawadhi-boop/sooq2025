@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronLeft, ChevronRight, Star, Heart, ShoppingCart, Eye, Zap, TrendingUp, Gift } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star, Heart, ShoppingCart, Eye, Zap, TrendingUp, Gift, Loader2 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
-import { mockProducts, mockCategories, mockBanners, mockSellers } from '../mock/data';
+import { categoriesAPI, productsAPI, apiUtils } from '../services/api';
 
 const HomePage = () => {
   const [currentBanner, setCurrentBanner] = useState(0);
