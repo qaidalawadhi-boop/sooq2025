@@ -3,6 +3,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from typing import List, Optional
 from datetime import datetime, timedelta
 import jwt
+from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
 import bcrypt
 from models_admin import (
     AdminUser, AdminUserCreate, AdminLogin, AdminToken,
