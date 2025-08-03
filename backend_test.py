@@ -24,6 +24,7 @@ class BazariAPITester:
         self.session = None
         self.test_results = []
         self.failed_tests = []
+        self.admin_token = None
         
     async def __aenter__(self):
         self.session = aiohttp.ClientSession()
