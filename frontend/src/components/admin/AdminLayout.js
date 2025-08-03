@@ -92,6 +92,11 @@ const AdminLayout = ({ children }) => {
       path: '/admin/reports'
     },
     {
+      title: 'تغيير كلمة المرور',
+      icon: Lock,
+      path: '/admin/change-password'
+    },
+    {
       title: 'الإعدادات',
       icon: Settings,
       path: '/admin/settings'
