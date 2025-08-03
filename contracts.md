@@ -1,7 +1,7 @@
-# عقود API لمنصة بازاري
+# عقود API لمنصة سوق إكسبرس
 
 ## نظرة عامة
-هذا المستند يحدد عقود API بين Frontend (React) و Backend (FastAPI) لمنصة بازاري.
+هذا المستند يحدد عقود API بين Frontend (React) و Backend (FastAPI) لمنصة سوق إكسبرس.
 
 ## البيانات المُوكيد الحالية في mock/data.js
 - `mockCategories`: أقسام المنتجات
