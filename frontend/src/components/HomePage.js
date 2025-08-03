@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight, Star, Heart, ShoppingCart, Eye, Zap, Trendin
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
-import { categoriesAPI, productsAPI, apiUtils } from '../services/api';
+import { mockCategories, mockProducts } from '../mock/data';
 
 const HomePage = () => {
   const [currentBanner, setCurrentBanner] = useState(0);
@@ -39,21 +39,15 @@ const HomePage = () => {
     const loadData = async () => {
       setLoading(true);
       try {
-        // Load all data in parallel
-        const [categoriesData, featuredData, newData, trendingData] = await Promise.all([
-          categoriesAPI.getAll(),
-          productsAPI.getFeatured(),
-          productsAPI.getNew(),
-          productsAPI.getTrending(),
-        ]);
-
-        setCategories(categoriesData || []);
-        setFeaturedProducts(featuredData || []);
-        setNewProducts(newData || []);
-        setTrendingProducts(trendingData || []);
+        // Use mock data temporarily to show working UI
+        setCategories(mockCategories || []);
+        setFeaturedProducts(mockProducts.filter(product => product.isFeatured) || []);
+        setNewProducts(mockProducts.filter(product => product.isNew) || []);
+        setTrendingProducts(mockProducts.slice(0, 4) || []);
+        
+        setError(null);
       } catch (err) {
-        const errorInfo = apiUtils.handleError(err);
-        setError(errorInfo.message);
+        setError('حدث خطأ في تحميل البيانات');
         console.error('Error loading homepage data:', err);
       } finally {
         setLoading(false);
