@@ -112,7 +112,7 @@ const AdminDashboard = () => {
         {/* Welcome Section */}
         <div>
           <h1 className="text-3xl font-bold text-gray-900">مرحباً في لوحة التحكم</h1>
-          <p className="text-gray-600 mt-2">إليك نظرة عامة على أداء منصة بازاري</p>
+          <p className="text-gray-600 mt-2">إليك نظرة عامة على أداء منصة سوق إكسبرس</p>
         </div>
 
         {/* Stats Grid */}
