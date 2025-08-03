@@ -8,15 +8,59 @@ import { categoriesAPI, productsAPI, apiUtils } from '../services/api';
 
 const HomePage = () => {
   const [currentBanner, setCurrentBanner] = useState(0);
+  const [categories, setCategories] = useState([]);
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [newProducts, setNewProducts] = useState([]);
   const [trendingProducts, setTrendingProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Mock banners for now (can be moved to API later)
+  const mockBanners = [
+    {
+      id: '1',
+      title: 'تخفيضات الجمعة البيضاء',
+      subtitle: 'خصومات تصل إلى 70% على جميع المنتجات',
+      image: 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80',
+      cta: 'تسوق الآن',
+      link: '/categories'
+    },
+    {
+      id: '2',
+      title: 'إلكترونيات جديدة',
+      subtitle: 'اكتشف أحدث الأجهزة والتقنيات',
+      image: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80',
+      cta: 'استكشف',
+      link: '/categories/electronics'
+    }
+  ];
 
   useEffect(() => {
-    // Simulate data loading
-    setFeaturedProducts(mockProducts.filter(product => product.isFeatured));
-    setNewProducts(mockProducts.filter(product => product.isNew));
-    setTrendingProducts(mockProducts.slice(0, 4));
+    const loadData = async () => {
+      setLoading(true);
+      try {
+        // Load all data in parallel
+        const [categoriesData, featuredData, newData, trendingData] = await Promise.all([
+          categoriesAPI.getAll(),
+          productsAPI.getFeatured(),
+          productsAPI.getNew(),
+          productsAPI.getTrending(),
+        ]);
+
+        setCategories(categoriesData || []);
+        setFeaturedProducts(featuredData || []);
+        setNewProducts(newData || []);
+        setTrendingProducts(trendingData || []);
+      } catch (err) {
+        const errorInfo = apiUtils.handleError(err);
+        setError(errorInfo.message);
+        console.error('Error loading homepage data:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
 
     // Auto-rotate banner
     const interval = setInterval(() => {
