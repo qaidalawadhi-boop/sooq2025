@@ -72,7 +72,8 @@ async def startup_db_client():
     logger.info("Starting up Bazari API...")
     try:
         await init_sample_data()
-        logger.info("Database initialized successfully")
+        await init_default_admin()
+        logger.info("Database and admin data initialized successfully")
     except Exception as e:
         logger.error(f"Error initializing database: {e}")
 
