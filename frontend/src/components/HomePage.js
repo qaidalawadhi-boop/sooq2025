@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight, Star, Heart, ShoppingCart, Eye, Zap, Trendin
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
-import { mockCategories, mockProducts } from '../mock/data';
+import { categoriesAPI, productsAPI } from '../services/api';
 
 const HomePage = () => {
   const [currentBanner, setCurrentBanner] = useState(0);
