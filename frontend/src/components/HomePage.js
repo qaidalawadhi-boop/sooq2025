@@ -39,16 +39,34 @@ const HomePage = () => {
     const loadData = async () => {
       setLoading(true);
       try {
-        // Use mock data temporarily to show working UI
-        setCategories(mockCategories || []);
-        setFeaturedProducts(mockProducts.filter(product => product.isFeatured) || []);
-        setNewProducts(mockProducts.filter(product => product.isNew) || []);
-        setTrendingProducts(mockProducts.slice(0, 4) || []);
+        // Load real data from APIs
+        const [categoriesData, featuredData, newData, trendingData] = await Promise.all([
+          categoriesAPI.getAll(),
+          productsAPI.getFeatured(),
+          productsAPI.getNew(),
+          productsAPI.getTrending()
+        ]);
+        
+        setCategories(categoriesData || []);
+        setFeaturedProducts(featuredData || []);
+        setNewProducts(newData || []);
+        setTrendingProducts(trendingData || []);
         
         setError(null);
       } catch (err) {
         setError('حدث خطأ في تحميل البيانات');
         console.error('Error loading homepage data:', err);
+        
+        // Fallback to mock data on error
+        try {
+          const { mockCategories, mockProducts } = await import('../mock/data');
+          setCategories(mockCategories || []);
+          setFeaturedProducts(mockProducts.filter(product => product.isFeatured) || []);
+          setNewProducts(mockProducts.filter(product => product.isNew) || []);
+          setTrendingProducts(mockProducts.slice(0, 4) || []);
+        } catch (fallbackErr) {
+          console.error('Error loading mock data:', fallbackErr);
+        }
       } finally {
         setLoading(false);
       }
