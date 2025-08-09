@@ -1,16 +1,6 @@
 import axios from 'axios';
 
-// Force HTTPS for admin API URL - environment variable fallback  
-let backendUrl = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL;
-// Ensure HTTPS protocol
-if (backendUrl && backendUrl.startsWith('http://')) {
-  backendUrl = backendUrl.replace('http://', 'https://');
-}
-// Fallback to current domain if env var not available
-if (!backendUrl) {
-  backendUrl = 'https://0fe6b308-2d29-4e02-be60-34c7de1a9084.preview.emergentagent.com';
-}
-const ADMIN_API_BASE_URL = `${backendUrl}/api/admin`;
+const ADMIN_API_BASE_URL = 'https://0fe6b308-2d29-4e02-be60-34c7de1a9084.preview.emergentagent.com/api/admin';
 
 const adminApi = axios.create({
   baseURL: ADMIN_API_BASE_URL,
