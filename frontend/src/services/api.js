@@ -1,7 +1,16 @@
 import axios from 'axios';
 
-// Use environment variable for backend URL
-const API_BASE_URL = `${process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL}/api`;
+// Force HTTPS for backend URL - environment variable fallback
+let backendUrl = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL;
+// Ensure HTTPS protocol
+if (backendUrl && backendUrl.startsWith('http://')) {
+  backendUrl = backendUrl.replace('http://', 'https://');
+}
+// Fallback to current domain if env var not available
+if (!backendUrl) {
+  backendUrl = 'https://0fe6b308-2d29-4e02-be60-34c7de1a9084.preview.emergentagent.com';
+}
+const API_BASE_URL = `${backendUrl}/api`;
 
 const api = axios.create({
   baseURL: API_BASE_URL,
