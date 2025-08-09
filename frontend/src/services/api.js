@@ -14,7 +14,13 @@ const api = axios.create({
 // Request interceptor
 api.interceptors.request.use(
   (config) => {
-    // Add any auth tokens here if needed
+    // Force HTTPS in all URLs
+    if (config.url && config.url.startsWith('http://')) {
+      config.url = config.url.replace('http://', 'https://');
+    }
+    if (config.baseURL && config.baseURL.startsWith('http://')) {
+      config.baseURL = config.baseURL.replace('http://', 'https://');
+    }
     return config;
   },
   (error) => {
