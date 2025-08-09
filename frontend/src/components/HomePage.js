@@ -39,7 +39,7 @@ const HomePage = () => {
     const loadData = async () => {
       setLoading(true);
       try {
-        // Load real data from APIs
+        // First try to load real data from APIs
         const [categoriesData, featuredData, newData, trendingData] = await Promise.all([
           categoriesAPI.getAll(),
           productsAPI.getFeatured(),
@@ -53,9 +53,10 @@ const HomePage = () => {
         setTrendingProducts(trendingData || []);
         
         setError(null);
+        console.log('✅ Successfully loaded real data from APIs');
       } catch (err) {
-        setError('حدث خطأ في تحميل البيانات');
-        console.error('Error loading homepage data:', err);
+        console.log('⚠️ API Error, falling back to mock data:', err.message);
+        setError(null); // Don't show error, just use fallback
         
         // Fallback to mock data on error
         try {
@@ -64,8 +65,10 @@ const HomePage = () => {
           setFeaturedProducts(mockProducts.filter(product => product.isFeatured) || []);
           setNewProducts(mockProducts.filter(product => product.isNew) || []);
           setTrendingProducts(mockProducts.slice(0, 4) || []);
+          console.log('✅ Loaded mock data as fallback');
         } catch (fallbackErr) {
-          console.error('Error loading mock data:', fallbackErr);
+          console.error('❌ Error loading mock data:', fallbackErr);
+          setError('حدث خطأ في تحميل البيانات');
         }
       } finally {
         setLoading(false);
