@@ -323,6 +323,8 @@ agent_communication:
     message: "Backend testing completed successfully. All 24 test cases passed (100% success rate). Fixed one ObjectId serialization issue in sellers route. All endpoints working correctly with proper error handling, pagination, search functionality, and data validation. Sample data loaded and accessible. Backend is fully functional and ready for frontend integration."
   - agent: "testing"
     message: "Admin APIs testing completed successfully. All 42 test cases passed (100% success rate). Tested all requested admin APIs: Authentication (login/profile), Dashboard (stats/analytics), Orders Management (CRUD operations), Products/Categories/Sellers Management, Settings (GET/PUT), and Notifications (GET/mark as read). Fixed SystemSettings model validation and database name mismatch. JWT authentication working correctly with proper security. All admin functionality is working as expected with username: admin, password: admin123."
+  - agent: "main"
+    message: "CRITICAL BUG FIXED: Mixed content error resolved. User reported 'Souq Express platform not working'. Root cause was HTTP/HTTPS protocol mismatch causing browser to block API calls. Added HTTPS=true to frontend .env file. API connectivity now working: Categories API loading 6 categories, Products API loading 2 featured products. Platform fully functional."
 
 metadata:
   created_by: "testing_agent"
