@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const ADMIN_API_BASE_URL = 'https://fd48baef-df2c-4665-ad4e-a7bc8575b409.preview.emergentagent.com/api/admin';
+const ADMIN_API_BASE_URL = 'https://0fe6b308-2d29-4e02-be60-34c7de1a9084.preview.emergentagent.com/api/admin';
 
 const adminApi = axios.create({
   baseURL: ADMIN_API_BASE_URL,
